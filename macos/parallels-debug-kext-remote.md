@@ -100,21 +100,21 @@ At this moment the VM freezes. You cannot move windows, you cannot type anything
 
 Start lldb:
 
-'''
+```
 mavel-catalina:~ testuser$ lldb /Library/Developer/KDKs/*KDK Version*/System/Library/Kernels/kernel.development
-'''
+```
 
 Debugger will tell you to load kernel.py. Do as suggested:
 
-'''
+```
 (lldb) command script import "/Library/Developer/KDKs/*KDK Version*/System/Library/Kernels/kernel.development.dSYM/Contents/Resources/Python/kernel.py"
-'''
+```
 
 Connect to VM using its IP address. This is the step that establishes an actual connection. On success, you will see running output and information about the VM's kernel:
 
-'''
+```
 (lldb) kdp-remote 192.168.1.182
-'''
+```
 
 Once connected, you can use all lldb's commands to debug the stopped VM, i.e. run `thread backtrace` to see where it got stopped. In case of a KEXT crash it will be a stack trace of where an exception was raised. However, it will contain only macOS kernel's symbols, not your KEXT symbols. To load KEXT symbols, load them from the executable file of your KEXT bundle:
 
@@ -135,7 +135,7 @@ When done, detach the debugger:
 
 ## If you made a change in KEXT...
 
-Once you made a change in your KEXT, you will install it to a VM to find out if the bug is fixed. Remember to rebuild the cache and reboot the VM before connecting the debugger again!
+Once you made a change in your KEXT, you will install it to the VM to find out if the bug is fixed. Remember to rebuild the cache and reboot the VM before connecting the debugger again!
 
 ```
 sudo kextcache -invalidate /
@@ -143,3 +143,9 @@ sudo reboot
 ```
 
 **NB:** I noticed that for some reason macOS loses the boot args after these manipulations, and lldb cannot connect to the VM from the host. (Even though the VM properties show the correct Bool flags in the Parallels UI, but `nvram boot-args` tells differently). To correct it, I change the boot flags in Parallels UI by adding an extra new line (or removing it), and booting again. It always resolves the issue for me.
+
+## Resources
+
+- [https://knight.sc/debugging/2018/08/15/macos-kernel-debugging.html](https://knight.sc/debugging/2018/08/15/macos-kernel-debugging.html)
+- [https://www.offensive-security.com/offsec/kernel-debugging-macos-with-sip/](https://www.offensive-security.com/offsec/kernel-debugging-macos-with-sip/)
+- [https://ddeville.me/2015/08/kernel-debugging-with-lldb-and-vmware-fusion/](https://ddeville.me/2015/08/kernel-debugging-with-lldb-and-vmware-fusion/)
